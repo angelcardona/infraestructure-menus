@@ -151,17 +151,23 @@ Write-Separator
 # --- 6. Clonar repositorios de servicios (si no existen) ---
 Write-Host "6. Clonando repositorios de servicios..." -ForegroundColor Cyan
 
-# Lista de servicios a clonar
-$services = @("api-gateway", "menu-ai-agent", "menu-service", "menus-eureka")
+# Lista de servicios a clonar con sus URLs de Git
+$services = @(
+    @{ name = "menu-api-gateway"; url = "git@github.com:angelcardona/api-gateway.git" },
+    @{ name = "menu-ia-agent"; url = "git@github.com:angelcardona/ia-agent.git" },
+    @{ name = "menu-service"; url = "git@github.com:angelcardona/menu-service.git" },
+    @{ name = "menus-eureka"; url = "git@github.com:angelcardona/menus-eureka.git" }
+)
 
 foreach ($service in $services) {
-    $servicePath = (Join-Path $baseProjectDir $service)
+    $serviceName = $service.name
+    $serviceUrl = $service.url
+    $servicePath = (Join-Path $baseProjectDir $serviceName)
     if (-not (Test-Path -Path $servicePath -PathType Container)) {
-        Write-Info "Clonando $service..."
-        # Reemplaza esta URL con la URL real de tu repositorio
-        git clone "https://example.com/repos/$service.git" "$servicePath"
+        Write-Info "Clonando $serviceName..."
+        git clone $serviceUrl "$servicePath"
     } else {
-        Write-Warning "El repositorio $service ya existe. Se omite la clonacion."
+        Write-Warning "El repositorio $serviceName ya existe. Se omite la clonacion."
     }
 }
 Write-Separator
